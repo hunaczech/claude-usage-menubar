@@ -28,8 +28,9 @@ To install, drag `dist/ClaudeUsageBar.app` into `/Applications`.
 
 ## Using it
 
-- The menu bar shows the higher of the two windows, e.g. `42%`
-  (green < 70%, amber 70–89%, red ≥ 90%).
+- The menu bar shows the higher of the two windows with a status dot, e.g.
+  `🟢 42%` (🟢 < 70%, 🟠 70–89%, 🔴 ≥ 90%). macOS tints menu-bar text monochrome,
+  so the dot carries the color; the dropdown shows per-window colors.
 - Click it for a panel with both windows, last-updated time, and a **Refresh** button.
 - Toggles for **Launch at login**, **Notify at 90%**, and a refresh-interval picker.
 
@@ -68,5 +69,8 @@ Expect `…-5h-utilization` and `…-7d-utilization` lines. Cross-check against
   them. Parsing is isolated in `UsageClient` behind the `UsageProviding`
   protocol so a CLI-based fallback can replace it without touching the rest.
 - Each poll spends ~1 token of quota; the default interval is 5 min (configurable).
-- The token is read-only from the Keychain, refreshed only in memory, and never
-  logged or sent anywhere except `api.anthropic.com` / `console.anthropic.com`.
+- The token is read **read-only** from the Keychain and never logged or written
+  back. The app does **not** refresh it itself (that's Claude Code's job — self-
+  refreshing could rotate and invalidate Claude Code's own credential); an expired
+  token just 401s and the app prompts you to re-auth in Claude Code. The token is
+  only ever sent to `api.anthropic.com`.

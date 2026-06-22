@@ -95,12 +95,7 @@ struct HeaderUsageClient: UsageProviding {
 
     /// Case-insensitive header lookup returning a parsed percentage.
     private static func percentHeader(_ http: HTTPURLResponse, _ name: String) -> Double? {
-        let value: String?
-        if #available(macOS 13.0, *) {
-            value = http.value(forHTTPHeaderField: name)
-        } else {
-            value = (http.allHeaderFields[name] as? String)
-        }
+        let value = http.value(forHTTPHeaderField: name)
         guard let raw = value?.trimmingCharacters(in: .whitespaces), let n = Double(raw) else {
             return nil
         }

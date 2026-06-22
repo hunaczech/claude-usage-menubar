@@ -63,21 +63,33 @@ final class AppModel: ObservableObject {
 
     // MARK: Derived display
 
-    /// Short menu-bar string, e.g. "42%" — or a placeholder while loading / on error.
+    /// Short menu-bar string, e.g. "🟢 42%" — or a placeholder while loading / on error.
+    /// macOS renders menu-bar *text* monochrome, so the threshold level is carried
+    /// by a colored dot emoji (which does render in color) rather than `titleColor`.
     var titleString: String {
         if let pct = usage?.headline {
-            return "\(Int(pct.rounded()))%"
+            return "\(statusDot(for: pct)) \(Int(pct.rounded()))%"
         }
         return lastError == nil ? "…" : "—"
     }
 
     /// Title color from thresholds: green < 70, amber 70–89, red >= 90.
+    /// Used by the dropdown; the menu-bar title relies on `statusDot` instead.
     var titleColor: Color {
         guard let pct = usage?.headline else { return .secondary }
         switch pct {
         case ..<70: return .green
         case ..<90: return .orange
         default: return .red
+        }
+    }
+
+    /// Colored dot for the menu-bar headline: 🟢 < 70, 🟠 70–89, 🔴 >= 90.
+    private func statusDot(for pct: Double) -> String {
+        switch pct {
+        case ..<70: return "🟢"
+        case ..<90: return "🟠"
+        default: return "🔴"
         }
     }
 
