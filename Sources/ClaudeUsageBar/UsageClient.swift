@@ -93,12 +93,16 @@ struct HeaderUsageClient: UsageProviding {
         return Usage(fiveHourPct: fiveHour, weeklyPct: weekly, fetchedAt: Date())
     }
 
-    /// Case-insensitive header lookup returning a parsed percentage.
+    /// Header lookup returning a 0–100 percentage.
+    ///
+    /// The `…-utilization` headers report a 0–1 fraction (e.g. `0.97` for 97%),
+    /// so we scale to a percentage. Guarded against a future format change: a
+    /// value already in 1…100 is passed through unscaled.
     private static func percentHeader(_ http: HTTPURLResponse, _ name: String) -> Double? {
         let value = http.value(forHTTPHeaderField: name)
         guard let raw = value?.trimmingCharacters(in: .whitespaces), let n = Double(raw) else {
             return nil
         }
-        return n
+        return n <= 1.0 ? n * 100 : n
     }
 }
