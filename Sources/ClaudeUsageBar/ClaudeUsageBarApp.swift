@@ -13,12 +13,7 @@ struct ClaudeUsageBarApp: App {
                 .foregroundStyle(model.titleColor)
         }
         .menuBarExtraStyle(.window)
-        .onChange(of: scenePhaseProxy) { _ in }
     }
-
-    // Placeholder to keep `model` referenced from the scene; the real work is
-    // kicked off when the dropdown first appears (see DropdownView.onAppear).
-    private var scenePhaseProxy: Int { 0 }
 }
 
 /// The popover shown when the menu-bar item is clicked.
